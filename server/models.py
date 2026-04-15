@@ -1,5 +1,7 @@
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import MetaData
+from marshmallow import Schema, fields, ValidationError, validates_schema, validates, post_load
+from pprint import pprint
 
 metadata = MetaData(
     naming_convention={
@@ -27,6 +29,12 @@ class User(db.Model):
     def __repr__(self):
         return f'<User {self.username}>'
     
+class UserSchema(Schema):
+
+    id = fields.Integer()
+    username = fields.String(range(1,80), required=True)
+    password = fields.Text(range(8,), required=True)
+    
 class JournalEntry(db.Model):
     __tablename__="journal_entries"
 
@@ -42,4 +50,32 @@ class JournalEntry(db.Model):
     
     def __repr__(self):
         return f'<Title {self.title} {self.content}>'
+    
+class JournalEntrySchema(Schema):
+
+    id = fields.Integer()
+    title = fields.String(required=True)
+    content = fields.Text(required=True)
+
+    @validates_schema('title', 'content')
+    def check_entry_duplicate(self, data, **kwargs):
+
+        #Duplicate check
+        existing = JournalEntry.query.filter_by(
+            title=data["title"],
+            content=["content"]
+        ).first()
+
+        if existing:
+            raise ValidationError(
+                "Journal entry already exists!"
+            )
+        
+    @post_load
+    def make_entry(self, data, **kwargs):
+        return JournalEntry(**data)
+
+
+journal_schema = JournalEntrySchema()
+
     
