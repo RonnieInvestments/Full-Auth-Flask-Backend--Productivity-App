@@ -34,6 +34,7 @@ class UserSchema(Schema):
     id = fields.Integer()
     username = fields.String(validate=validate.Range(1,80), required=True)
     password = fields.String(validate=validate.Range(8,), required=True)
+  
     
 class JournalEntry(db.Model):
     __tablename__="journal_entries"
