@@ -38,7 +38,7 @@ class JournalEntry(db.Model):
     user=db.relationship(
         "User", 
         back_populates="user", 
-        cascade="all, delete-orphan")
+    )
     
     def __repr__(self):
         return f'<Title {self.title} {self.content}>'
