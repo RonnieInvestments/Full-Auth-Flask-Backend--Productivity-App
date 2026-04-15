@@ -166,4 +166,5 @@ Developed as part of a final project for backend development using Flask.
 
 License
 
-This project is for educational purposes. You may modify and reuse it as needed.
+This project is for educational purposes. 
+Please modify and reuse it as needed.
