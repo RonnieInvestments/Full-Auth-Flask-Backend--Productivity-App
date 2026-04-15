@@ -1,6 +1,6 @@
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import MetaData
-from marshmallow import Schema, fields, ValidationError, validates_schema, validates, post_load
+from marshmallow import Schema, fields, ValidationError, validate, validates_schema, validates, post_load
 from pprint import pprint
 
 metadata = MetaData(
@@ -32,20 +32,20 @@ class User(db.Model):
 class UserSchema(Schema):
 
     id = fields.Integer()
-    username = fields.String(range(1,80), required=True)
-    password = fields.Text(range(8,), required=True)
+    username = fields.String(validate=validate.Range(1,80), required=True)
+    password = fields.String(validate=validate.Range(8,), required=True)
     
 class JournalEntry(db.Model):
     __tablename__="journal_entries"
 
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(20), unique=True, nullable=False)
-    content = db.Column(db.Text(50), nullable=False)
+    content = db.Column(db.String(50), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
 
     user=db.relationship(
         "User", 
-        back_populates="user", 
+        back_populates="journal_entries", 
     )
     
     def __repr__(self):
@@ -55,9 +55,9 @@ class JournalEntrySchema(Schema):
 
     id = fields.Integer()
     title = fields.String(required=True)
-    content = fields.Text(required=True)
+    content = fields.String(required=True)
 
-    @validates_schema('title', 'content')
+    @validates_schema
     def check_entry_duplicate(self, data, **kwargs):
 
         #Duplicate check
