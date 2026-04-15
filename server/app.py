@@ -1,4 +1,5 @@
-from flask import Flask, jsonify, request, bcrypt
+from flask import Flask, jsonify, request
+from flask_bcrypt import bcrypt
 from models import *
 from flask_jwt_extended import create_access_token,  JWTManager, jwt_required
 from flask_migrate import Migrate
