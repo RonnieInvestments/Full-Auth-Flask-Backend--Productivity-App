@@ -22,11 +22,32 @@ def home():
 @app.route("/entries", methods=["GET"])
 def get_journal_entries():
 
-    entries = JournalEntry.query.all()
+    #entries = JournalEntry.query.all()
 
-    entries_dict = journal_schema.dump(entries, many=True)
+    #entries_dict = journal_schema.dump(entries, many=True)
 
-    return make_response(entries_dict, 200)
+    #Pagination
+    page = request.args.get("page", 1, type=int)
+    per_page = request.args.get("per_page", 5, type=int)
+
+    pagination = JournalEntry.query.paginate(
+        page=page, 
+        per_page=per_page, 
+        error_out=False
+    )
+
+    entries = pagination.items
+    
+    return make_response({
+        "page": pagination.page,
+        "per_page": pagination.per_page,
+        "total": pagination.total,
+        "total_pages": pagination.pages,
+        "items": [JournalEntrySchema().dump(r) for r in entries]
+    }), 200
+
+
+    #return make_response(entries_dict, 200)
 
 
 @app.route("/entries", methods=["POST"])
