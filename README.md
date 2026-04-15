@@ -114,7 +114,7 @@ server/
 ## Code Quality and Design
 Clear separation of concerns (routes, models, config)
 Use of ORM for database abstraction
-JWT-based stateless authentication*
+JWT-based stateless authentication -> to be completed*
 Input validation with Marshmallow
 Scalable structure for future expansion
 
